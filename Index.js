@@ -29,6 +29,24 @@ app.get('/categorias', async (req, res) => {
   }
 });
 
+// Buscar categoria por ID
+app.get('/categorias/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query('SELECT * FROM categoria WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).send('Categoria não encontrada');
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erro ao buscar categoria por ID');
+  }
+});
+
 // Criar uma nova categoria
 app.post('/categorias', async (req, res) => {
   const { nome } = req.body;
@@ -80,6 +98,19 @@ app.delete('/categorias/:id', async (req, res) => {
     res.status(500).send('Erro ao deletar categoria');
   }
 });
+
+
+/*
+
+fazer aqui o crud dessas tabelas (select, insert, update, delete)
+aluno
+autor
+emprestimo
+livro
+
+*/
+
+
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
